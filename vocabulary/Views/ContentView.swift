@@ -12,7 +12,7 @@ struct ContentView: View {
     @State var isShowLogin = false
     var body: some View {
         VStack {
-            Button("ログイン") {
+            Button("テスト") {
                 isShowLogin .toggle()
             }
             Spacer()
