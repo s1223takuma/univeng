@@ -6,24 +6,34 @@
 //
 
 import SwiftUI
-
+import FirebaseAuth
 
 struct ContentView: View {
     @State var isShowLogin = false
+    var authenticationManager = AuthenticationManager()
+    @State var firstlogin = false
+    @State private var documentExists = false
+    @State private var isChecking = true
+
     var body: some View {
         VStack {
-            Button("テスト") {
-                isShowLogin .toggle()
-            }
-            Spacer()
-                .sheet(isPresented: $isShowLogin) {
-                    LoginView()
+            if authenticationManager.isSignIn == false {
+                LoginView()
+            } else {
+                Text("Hello, World!")
+                Button(action: {
+                    authenticationManager.signOut()
+                    DispatchQueue.main.async {
+                        UIApplication.shared.connectedScenes
+                            .compactMap { $0 as? UIWindowScene }
+                            .flatMap { $0.windows }
+                            .first?.rootViewController = UIHostingController(rootView: ContentView())
+                    }
+                }) {
+                    Text("ログアウト")
                 }
+            }
         }
-        .padding()
     }
 }
 
-#Preview {
-    ContentView()
-}
