@@ -1,26 +1,23 @@
 //
-//  ContentView.swift
+//  MainView.swift
 //  vocabulary
 //
 //  Created by 関琢磨 on 2025/07/09.
 //
 
 import SwiftUI
-import FirebaseAuth
 
-struct ContentView: View {
-    @State var isShowLogin = false
+struct MainView: View {
     var authenticationManager = AuthenticationManager()
-    @State var firstlogin = false
-    @State private var documentExists = false
-    @State private var isChecking = true
-
     var body: some View {
-        VStack {
-            if authenticationManager.isSignIn == false {
-                LoginView()
-            } else {
-                Text("Hello, World!")
+        NavigationView{
+            VStack {
+                VStack{
+                    NavigationLink(destination: CreateQuizView()) {
+                        Text("問題を作る")
+                    }.padding()
+
+                }
                 Button(action: {
                     authenticationManager.signOut()
                     DispatchQueue.main.async {
@@ -37,3 +34,6 @@ struct ContentView: View {
     }
 }
 
+#Preview{
+    MainView()
+}
