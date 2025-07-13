@@ -30,23 +30,47 @@ struct MainView: View {
                         .padding(.horizontal)
                 }
 
-                Button(action: {
-                    authenticationManager.signOut()
-                    DispatchQueue.main.async {
-                        UIApplication.shared.connectedScenes
-                            .compactMap { $0 as? UIWindowScene }
-                            .flatMap { $0.windows }
-                            .first?.rootViewController = UIHostingController(rootView: ContentView())
-                    }
-                }) {
-                    Text("ログアウト")
+                NavigationLink(destination: SolveMyQuizView()) {
+                    Text("自分で作った問題を解く")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.red)
+                        .background(Color.green)
                         .foregroundColor(.white)
                         .cornerRadius(12)
                         .padding(.horizontal)
+                }
+
+                HStack{
+                    NavigationLink(destination: CreateQuizView()) {
+                        Text("プロフィール")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.yellow)
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
+                            .padding(.horizontal)
+                    }
+
+                    Button(action: {
+                        authenticationManager.signOut()
+                        DispatchQueue.main.async {
+                            UIApplication.shared.connectedScenes
+                                .compactMap { $0 as? UIWindowScene }
+                                .flatMap { $0.windows }
+                                .first?.rootViewController = UIHostingController(rootView: ContentView())
+                        }
+                    }) {
+                        Text("ログアウト")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
+                            .padding(.horizontal)
+                    }
                 }
 
                 Spacer()

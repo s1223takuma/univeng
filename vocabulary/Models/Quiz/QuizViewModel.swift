@@ -28,29 +28,40 @@ class QuizViewModel: ObservableObject {
             completion(error)
         }
     }
-    // 通常のフェッチ（一回のみ）
-    func fetchQuiz() {
-        if quizmodel.isEmpty {
-            guard let userEmail = Auth.auth().currentUser?.uid else { return }
 
-            db.collection("Quiz").document(userEmail).addSnapshotListener { snapshot, error in
-                if let error {
-                    print("Error getting document: \(error)")
-                } else if let data = snapshot?.data() {
-                    _ = QuizModel(
-                        id: snapshot?.documentID ?? "",
+    func fetchMyQuizzes() {
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+
+        db.collection("Quiz")
+            .whereField("createuser", isEqualTo: userID)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("Error fetching quizzes: \(error.localizedDescription)")
+                    return
+                }
+
+                guard let documents = snapshot?.documents else { return }
+
+                let quizzes = documents.compactMap { doc -> QuizModel? in
+                    let data = doc.data()
+                    return QuizModel(
+                        id: doc.documentID,
                         question: data["question"] as? String ?? "",
                         answer: data["answer"] as? String ?? "",
                         category: data["category"] as? String ?? "",
                         createuser: data["createuser"] as? String ?? ""
                     )
                 }
+
+                DispatchQueue.main.async {
+                    self.quizmodel = quizzes
+                }
             }
-        }
     }
+
 
     // プロフィール更新後に呼び出すメソッド
     func refreshQuiz() {
-        fetchQuiz()
+        fetchMyQuizzes()
     }
 }
