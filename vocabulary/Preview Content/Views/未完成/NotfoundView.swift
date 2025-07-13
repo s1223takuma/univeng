@@ -10,7 +10,6 @@ import SwiftUI
 struct NotfoundView: View {
     var body: some View {
         Text("このページはまだ作成されていません")
-            .font(.largeTitle)
     }
 }
 
