@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SolveMyQuizView: View {
+struct SolveMyQuizListView: View {
     @State private var isFocused: Bool = false
     @ObservedObject private var viewModel = QuizViewModel()
 
@@ -58,5 +58,5 @@ struct SolveMyQuizView: View {
 
 
 #Preview {
-    SolveMyQuizView()
+    SolveMyQuizListView()
 }

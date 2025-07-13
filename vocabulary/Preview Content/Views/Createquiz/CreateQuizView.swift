@@ -4,9 +4,12 @@ struct CreateQuizView: View {
     @State private var answer: String = ""
     @State private var question: String = ""
     @Environment(\.dismiss) private var dismiss
-    @State private var words: [String] = ["", "Dart", "Swift", "Kotlin", "Go", "Python", "React"]
     @State private var selectword: String = ""
+    @State private var istoggle: Bool = false
+
     @ObservedObject private var viewModel = QuizViewModel()
+    @ObservedObject private var categoryviewModel = CategoryViewModel()
+
     @FocusState private var isFocused: Bool
 
     // アラート＆トースト表示用
@@ -16,7 +19,6 @@ struct CreateQuizView: View {
 
     var body: some View {
         ZStack {
-            // 背景タップでキーボードを閉じる
             Color.clear
                 .contentShape(Rectangle())
                 .onTapGesture {
@@ -31,13 +33,22 @@ struct CreateQuizView: View {
                 }
 
                 Section(header: Text("カテゴリー")) {
-                    Picker("カテゴリーを選択", selection: $selectword) {
-                        ForEach(words, id: \.self) { word in
-                            Text(word)
+                    if categoryviewModel.categoryNames.isEmpty {
+                        ProgressView("カテゴリーを読み込み中…")
+                    } else {
+                        Picker("カテゴリーを選択", selection: $selectword) {
+                            ForEach(categoryviewModel.categoryNames, id: \.self) { name in
+                                Text(name)
+                            }
                         }
+                        Text(selectword != "" ? "\(selectword)を選択中" : "未選択")
+                            .foregroundColor(selectword != "" ? .blue : .gray)
                     }
-                    Text(selectword != "" ? "\(selectword)を選択中" : "未選択")
-                        .foregroundColor(selectword != "" ? .blue : .gray)
+                    Button(action:{
+                        istoggle = true
+                    }){
+                        Text("新しいカテゴリーを作る")
+                    }
                 }
 
                 Section(header: Text("答え")) {
@@ -79,7 +90,14 @@ struct CreateQuizView: View {
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("エラー"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
-
+            .onAppear {
+                categoryviewModel.fetchCategoryNames()
+            }
+            .sheet(isPresented: $istoggle,onDismiss: {
+                categoryviewModel.fetchCategoryNames()
+            }) {
+                CreateCategoryView()
+            }
             // トースト表示
             if showToast {
                 VStack {
@@ -96,8 +114,4 @@ struct CreateQuizView: View {
             }
         }
     }
-}
-
-#Preview {
-    CreateQuizView()
 }

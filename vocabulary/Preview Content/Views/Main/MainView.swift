@@ -19,30 +19,40 @@ struct MainView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
 
-                NavigationLink(destination: CreateQuizView()) {
-                    Text("問題を作る")
+                NavigationLink(destination: SolveMyQuizListView()) {
+                    Text("問題を探す・解く")
                         .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
-                        .padding(.horizontal)
-                }
-
-                NavigationLink(destination: SolveMyQuizView()) {
-                    Text("自分で作った問題を解く")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity,maxHeight: 100)
                         .padding()
                         .background(Color.green)
                         .foregroundColor(.white)
                         .cornerRadius(12)
                         .padding(.horizontal)
                 }
-
                 HStack{
                     NavigationLink(destination: CreateQuizView()) {
+                        Text("問題を作る")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
+                            .padding(.horizontal)
+                    }
+                    NavigationLink(destination: NotfoundView()) {
+                        Text("マイリストを編集")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.purple)
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
+                            .padding(.horizontal)
+                    }
+                }
+                HStack{
+                    NavigationLink(destination: NotfoundView()) {
                         Text("プロフィール")
                             .font(.headline)
                             .frame(maxWidth: .infinity)
