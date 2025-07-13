@@ -9,15 +9,27 @@ import SwiftUI
 
 struct MainView: View {
     var authenticationManager = AuthenticationManager()
-    var body: some View {
-        NavigationView{
-            VStack {
-                VStack{
-                    NavigationLink(destination: CreateQuizView()) {
-                        Text("問題を作る")
-                    }.padding()
 
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 32) {
+                Spacer()
+
+                Text("Vocabulary App")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+
+                NavigationLink(destination: CreateQuizView()) {
+                    Text("問題を作る")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        .padding(.horizontal)
                 }
+
                 Button(action: {
                     authenticationManager.signOut()
                     DispatchQueue.main.async {
@@ -28,12 +40,21 @@ struct MainView: View {
                     }
                 }) {
                     Text("ログアウト")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        .padding(.horizontal)
                 }
+
+                Spacer()
             }
         }
     }
 }
 
-#Preview{
+#Preview {
     MainView()
 }
