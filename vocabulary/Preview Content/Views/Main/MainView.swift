@@ -19,7 +19,7 @@ struct MainView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
 
-                NavigationLink(destination: SolveMyQuizListView()) {
+                NavigationLink(destination: MyQuizListView()) {
                     Text("問題を探す・解く")
                         .font(.headline)
                         .frame(maxWidth: .infinity,maxHeight: 100)
@@ -45,7 +45,7 @@ struct MainView: View {
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.purple)
+                            .background(Color.gray)
                             .foregroundColor(.white)
                             .cornerRadius(12)
                             .padding(.horizontal)
@@ -57,7 +57,7 @@ struct MainView: View {
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.yellow)
+                            .background(Color.gray)
                             .foregroundColor(.white)
                             .cornerRadius(12)
                             .padding(.horizontal)

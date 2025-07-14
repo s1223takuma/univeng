@@ -7,14 +7,13 @@
 
 import SwiftUI
 
-struct SolveMyQuizListView: View {
+struct MyQuizListView: View {
     @State private var isFocused: Bool = false
     @ObservedObject private var viewModel = QuizViewModel()
 
     var body: some View {
-
             VStack {
-                Text("自分のクイズ一覧")
+                Text("自分の作ったクイズ一覧")
                     .font(.title2)
                     .fontWeight(.bold)
                     .padding(.top)
@@ -22,7 +21,7 @@ struct SolveMyQuizListView: View {
                 List {
                     ForEach(viewModel.quizmodel) { quiz in
                         ZStack {
-                            NavigationLink(destination: MainView()) {
+                            NavigationLink(destination: SolveQuizView(quiz:quiz)) {
                                 EmptyView()
                             }
                             .buttonStyle(.plain)
@@ -58,5 +57,5 @@ struct SolveMyQuizListView: View {
 
 
 #Preview {
-    SolveMyQuizListView()
+    MyQuizListView()
 }
