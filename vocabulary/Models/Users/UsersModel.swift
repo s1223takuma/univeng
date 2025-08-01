@@ -9,7 +9,7 @@ import FirebaseFirestore
 
 struct UsersModel: Identifiable{
     var id: String
-    var username: String
+    var name: String
     var totalpoint: Int
     var email: String
 }

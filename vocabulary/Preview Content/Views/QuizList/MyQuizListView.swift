@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct MyQuizListView: View {
-    @State private var isFocused: Bool = false
     @ObservedObject private var viewModel = QuizViewModel()
+    @ObservedObject private var categoryviewModel = CategoryViewModel()
+    @State private var selectword:String = "全て"
 
     var body: some View {
             VStack {
@@ -17,45 +18,59 @@ struct MyQuizListView: View {
                     .font(.title2)
                     .fontWeight(.bold)
                     .padding(.top)
-
-                List {
-                    ForEach(viewModel.quizmodel) { quiz in
-                        ZStack {
-                            NavigationLink(destination: SolveQuizView(quiz:quiz)) {
-                                EmptyView()
+                if categoryviewModel.categoryNames.isEmpty {
+                    ProgressView("カテゴリーを読み込み中…")
+                } else {
+                    HStack{
+                        Picker(selectword != "" ? "\(selectword)を選択中" : "カテゴリーを選択", selection: $selectword) {
+                            ForEach(categoryviewModel.categoryNames, id: \.self) { name in
+                                Text(name != "全て" ? "\(name)で絞り込む":"絞り込み無し")
                             }
-                            .buttonStyle(.plain)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color.clear)
-
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text(quiz.question)
-                                    .font(.headline)
-                                    .foregroundColor(.primary)
-                                    .multilineTextAlignment(.leading)
-                                    .padding()
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .cornerRadius(12)
-                            .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
-                            .padding(.vertical, 4)
-                            .padding(.horizontal)
                         }
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets())
                     }
                 }
-                .listStyle(PlainListStyle())
+
+
+                if viewModel.quizmodel.isEmpty {
+                    Spacer()
+                    VStack {
+                        Image(systemName: "questionmark.circle")
+                            .font(.system(size: 48))
+                            .foregroundColor(.gray)
+                        Text("まだクイズがありません")
+                            .foregroundColor(.gray)
+                            .padding(.top, 8)
+                    }
+                    Spacer()
+                } else {
+                    VStack{
+                        List {
+                            ForEach(viewModel.quizmodel) { quiz in
+                                NavigationLink(destination: SolveQuizView(quiz: quiz)) {
+                                    QuizCardView(quiz:quiz)
+                                }
+                                .padding(.vertical, 4)
+                            }
+                        }
+                        .listStyle(PlainListStyle())
+                    }
+                }
             }
-        .onAppear {
-            viewModel.fetchMyQuizzes()
-        }
+            .padding(.horizontal)
+            .onAppear {
+                viewModel.fetchMyQuizzes()
+                categoryviewModel.fetchCategoryNames()
+            }
+            .onChange(of:selectword){
+                if selectword == "全て"{
+                    viewModel.fetchMyQuizzes()
+                }else{
+                    viewModel.fetchMyQuizzesfilter(category: selectword)
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
     }
 }
-
-
-
-
-#Preview {
+#Preview{
     MyQuizListView()
 }

@@ -22,9 +22,19 @@ struct MainView: View {
                 NavigationLink(destination: MyQuizListView()) {
                     Text("問題を探す・解く")
                         .font(.headline)
-                        .frame(maxWidth: .infinity,maxHeight: 100)
+                        .frame(maxWidth: .infinity,maxHeight: 75)
                         .padding()
                         .background(Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        .padding(.horizontal)
+                }
+                NavigationLink(destination: NotfoundView()) {
+                    Text("マイリストから解く")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity,maxHeight: 75)
+                        .padding()
+                        .background(Color.gray)
                         .foregroundColor(.white)
                         .cornerRadius(12)
                         .padding(.horizontal)
@@ -33,7 +43,7 @@ struct MainView: View {
                     NavigationLink(destination: CreateQuizView()) {
                         Text("問題を作る")
                             .font(.headline)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: .infinity,maxHeight: 30)
                             .padding()
                             .background(Color.blue)
                             .foregroundColor(.white)
@@ -43,7 +53,7 @@ struct MainView: View {
                     NavigationLink(destination: NotfoundView()) {
                         Text("マイリストを編集")
                             .font(.headline)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: .infinity,maxHeight: 30)
                             .padding()
                             .background(Color.gray)
                             .foregroundColor(.white)
@@ -55,7 +65,7 @@ struct MainView: View {
                     NavigationLink(destination: NotfoundView()) {
                         Text("プロフィール")
                             .font(.headline)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: .infinity,maxHeight: 30)
                             .padding()
                             .background(Color.gray)
                             .foregroundColor(.white)
@@ -74,7 +84,7 @@ struct MainView: View {
                     }) {
                         Text("ログアウト")
                             .font(.headline)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: .infinity,maxHeight: 30)
                             .padding()
                             .background(Color.red)
                             .foregroundColor(.white)

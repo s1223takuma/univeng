@@ -36,13 +36,12 @@ struct CreateQuizView: View {
                     if categoryviewModel.categoryNames.isEmpty {
                         ProgressView("カテゴリーを読み込み中…")
                     } else {
-                        Picker("カテゴリーを選択", selection: $selectword) {
+                        Picker(selectword != "" ? "\(selectword)を選択中" : "カテゴリーを選択", selection: $selectword) {
                             ForEach(categoryviewModel.categoryNames, id: \.self) { name in
                                 Text(name)
                             }
                         }
-                        Text(selectword != "" ? "\(selectword)を選択中" : "未選択")
-                            .foregroundColor(selectword != "" ? .blue : .gray)
+
                     }
                     Button(action:{
                         istoggle = true

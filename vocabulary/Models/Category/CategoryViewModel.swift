@@ -26,29 +26,6 @@ class CategoryViewModel: ObservableObject {
             completion(error)
         }
     }
-
-
-    func fetchCategoryNames(completion: @escaping ([String]) -> Void) {
-        db.collection("Category").getDocuments { snapshot, error in
-            if let error = error {
-                print("Error fetching categories: \(error.localizedDescription)")
-                completion([])  // エラー時は空リスト返す
-                return
-            }
-
-            guard let documents = snapshot?.documents else {
-                completion([])
-                return
-            }
-
-            // nameだけを抽出
-            let names = documents.compactMap { doc in
-                doc.data()["name"] as? String
-            }
-
-            completion(names)
-        }
-    }
     func fetchCategoryNames() {
         let db = Firestore.firestore()
         db.collection("Category").getDocuments { snapshot, error in
