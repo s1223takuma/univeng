@@ -16,14 +16,15 @@ class QuizViewModel: ObservableObject {
     func saveQuiz(question: String,answer: String,category: String,completion: @escaping (Error?) -> Void) {
         let docRef = db.collection("Quiz").document()
 
-        let quiz = QuizModel(id: docRef.documentID,question:question,answer:answer,category:category,createuser:Auth.auth().currentUser!.uid)
+        let quiz = QuizModel(id: docRef.documentID,question:question,answer:answer,category:category,createuser:Auth.auth().currentUser!.uid, createuserdomain: String(Auth.auth().currentUser!.email!.split(separator:"@")[1]))
 
         docRef.setData([
             "id": quiz.id,
             "question": quiz.question,
             "answer": quiz.answer,
             "category": quiz.category,
-            "createuser": quiz.createuser
+            "createuser": quiz.createuser,
+            "createuserdomain": quiz.createuserdomain
         ]) { error in
             completion(error)
         }
@@ -47,17 +48,15 @@ class QuizViewModel: ObservableObject {
                         question: data["question"] as? String ?? "",
                         answer: data["answer"] as? String ?? "",
                         category: data["category"] as? String ?? "",
-                        createuser: data["createuser"] as? String ?? ""
+                        createuser: data["createuser"] as? String ?? "",
+                        createuserdomain: data["createuserdomain"] as? String ?? ""
                     )
                 }
-
                 DispatchQueue.main.async {
                     self.quizmodel = quizzes
                 }
             }
     }
-
-
     func fetchAllQuizzes() {
         db.collection("Quiz")
             .getDocuments { snapshot, error in
@@ -75,7 +74,8 @@ class QuizViewModel: ObservableObject {
                         question: data["question"] as? String ?? "",
                         answer: data["answer"] as? String ?? "",
                         category: data["category"] as? String ?? "",
-                        createuser: data["createuser"] as? String ?? ""
+                        createuser: data["createuser"] as? String ?? "",
+                        createuserdomain: data["createuserdomain"] as? String ?? ""
                     )
                 }
 
@@ -105,7 +105,8 @@ class QuizViewModel: ObservableObject {
                         question: data["question"] as? String ?? "",
                         answer: data["answer"] as? String ?? "",
                         category: data["category"] as? String ?? "",
-                        createuser: data["createuser"] as? String ?? ""
+                        createuser: data["createuser"] as? String ?? "",
+                        createuserdomain: data["createuserdomain"] as? String ?? ""
                     )
                 }
 
@@ -114,8 +115,6 @@ class QuizViewModel: ObservableObject {
                 }
             }
     }
-
-
     func fetchMyQuizzes() {
         guard let userID = Auth.auth().currentUser?.uid else { return }
 
@@ -136,7 +135,8 @@ class QuizViewModel: ObservableObject {
                         question: data["question"] as? String ?? "",
                         answer: data["answer"] as? String ?? "",
                         category: data["category"] as? String ?? "",
-                        createuser: data["createuser"] as? String ?? ""
+                        createuser: data["createuser"] as? String ?? "",
+                        createuserdomain: data["createuserdomain"] as? String ?? ""
                     )
                 }
 
@@ -145,6 +145,7 @@ class QuizViewModel: ObservableObject {
                 }
             }
     }
+
     func deleteQuiz(quiz:QuizModel){
         let docRef = db.collection("Quiz").document(quiz.id)
         docRef.delete()

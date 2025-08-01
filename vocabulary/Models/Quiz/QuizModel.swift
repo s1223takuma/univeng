@@ -13,4 +13,5 @@ struct QuizModel: Identifiable{
     var answer: String
     var category: String
     var createuser: String
+    var createuserdomain: String
 }

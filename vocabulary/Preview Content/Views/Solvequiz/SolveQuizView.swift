@@ -35,7 +35,7 @@ struct SolveQuizView: View {
                     .disabled(isAnswered)
 
                 if isAnswered {
-                    Text(isCorrect ? "⚪︎\n正解" : "×\n不正解")
+                    Text(isCorrect ? "⚪︎\n正解" : "×\n不正解\n答え：\(quiz.answer)")
                         .font(.headline)
                         .foregroundColor(isCorrect ? .green : .red)
                         .multilineTextAlignment(.center)

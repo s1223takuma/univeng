@@ -17,13 +17,11 @@ struct MainView: View {
         NavigationView {
             VStack(spacing: 32) {
                 Spacer()
-
-                Text("Vocabulary App")
+                Text("クイズアプリ")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-
                 NavigationLink(destination: QuizListMainView()) {
-                    Text("問題を探す・解く")
+                    Text("1問ずつ問題を探す・解く")
                         .font(.headline)
                         .frame(maxWidth: .infinity,maxHeight: 75)
                         .padding()
@@ -33,9 +31,9 @@ struct MainView: View {
                         .padding(.horizontal)
                 }
                 NavigationLink(destination: NotfoundView()) {
-                    Text("マイリストから解く")
+                    Text("連続で問題を解く")
                         .font(.headline)
-                        .frame(maxWidth: .infinity,maxHeight: 75)
+                        .frame(maxWidth: .infinity,maxHeight: 50)
                         .padding()
                         .background(Color.gray)
                         .foregroundColor(.white)
@@ -43,10 +41,10 @@ struct MainView: View {
                         .padding(.horizontal)
                 }
                 if ckeckmail.check(mail:Auth.auth().currentUser?.email!){
-                    NavigationLink(destination: NotfoundView()){
+                    NavigationLink(destination: AcademicQuizListView()){
                         Text("大学生モード")
                             .font(.headline)
-                            .frame(maxWidth: .infinity,maxHeight: 75)
+                            .frame(maxWidth: .infinity,maxHeight: 30)
                             .padding()
                             .background(Color.gray)
                             .foregroundColor(.white)
@@ -77,17 +75,6 @@ struct MainView: View {
                     }
                 }
                 HStack{
-                    NavigationLink(destination: NotfoundView()) {
-                        Text("プロフィール")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity,maxHeight: 30)
-                            .padding()
-                            .background(Color.gray)
-                            .foregroundColor(.white)
-                            .cornerRadius(12)
-                            .padding(.horizontal)
-                    }
-
                     Button(action: {
                         authenticationManager.signOut()
                         DispatchQueue.main.async {
@@ -107,7 +94,6 @@ struct MainView: View {
                             .padding(.horizontal)
                     }
                 }
-
                 Spacer()
             }
         }
