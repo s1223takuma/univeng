@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import FirebaseAuth
+import Combine
 
 struct MainView: View {
     var authenticationManager = AuthenticationManager()
+    @ObservedObject private var ckeckmail = checkmaildomain()
 
     var body: some View {
         NavigationView {
@@ -38,6 +41,18 @@ struct MainView: View {
                         .foregroundColor(.white)
                         .cornerRadius(12)
                         .padding(.horizontal)
+                }
+                if ckeckmail.check(mail:Auth.auth().currentUser?.email!){
+                    NavigationLink(destination: NotfoundView()){
+                        Text("大学生モード")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity,maxHeight: 75)
+                            .padding()
+                            .background(Color.gray)
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
+                            .padding(.horizontal)
+                    }
                 }
                 HStack{
                     NavigationLink(destination: CreateQuizView()) {
