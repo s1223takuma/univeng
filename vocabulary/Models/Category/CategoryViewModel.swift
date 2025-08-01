@@ -15,7 +15,7 @@ class CategoryViewModel: ObservableObject {
     @Published var categoryNames: [String] = []
 
     func saveCategory(name: String,completion: @escaping (Error?) -> Void) {
-        let docRef = db.collection("Category").document()
+        let docRef = db.collection("Category").document(name)
 
         let category = CategoryModel(id: docRef.documentID,name: name)
 

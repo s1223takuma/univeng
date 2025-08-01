@@ -10,7 +10,7 @@ import SwiftUI
 struct MyQuizListView: View {
     @ObservedObject private var viewModel = QuizViewModel()
     @ObservedObject private var categoryviewModel = CategoryViewModel()
-    @State private var selectword:String = "全て"
+    @State private var selectword:String = ""
 
     var body: some View {
             VStack {
@@ -24,7 +24,7 @@ struct MyQuizListView: View {
                     HStack{
                         Picker(selectword != "" ? "\(selectword)を選択中" : "カテゴリーを選択", selection: $selectword) {
                             ForEach(categoryviewModel.categoryNames, id: \.self) { name in
-                                Text(name != "全て" ? "\(name)で絞り込む":"絞り込み無し")
+                                Text(name != "" ? "\(name)で絞り込む":"絞り込み無し")
                             }
                         }
                     }
@@ -62,7 +62,7 @@ struct MyQuizListView: View {
                 categoryviewModel.fetchCategoryNames()
             }
             .onChange(of:selectword){
-                if selectword == "全て"{
+                if selectword == ""{
                     viewModel.fetchMyQuizzes()
                 }else{
                     viewModel.fetchMyQuizzesfilter(category: selectword)

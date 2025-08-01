@@ -19,7 +19,7 @@ struct MainView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
 
-                NavigationLink(destination: MyQuizListView()) {
+                NavigationLink(destination: QuizListMainView()) {
                     Text("問題を探す・解く")
                         .font(.headline)
                         .frame(maxWidth: .infinity,maxHeight: 75)
