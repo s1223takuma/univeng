@@ -29,6 +29,61 @@ class QuizViewModel: ObservableObject {
         }
     }
 
+    func fetchAllQuizzesfilter(category:String) {
+        db.collection("Quiz")
+            .whereField("category",isEqualTo:category)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("Error fetching quizzes: \(error.localizedDescription)")
+                    return
+                }
+
+                guard let documents = snapshot?.documents else { return }
+
+                let quizzes = documents.compactMap { doc -> QuizModel? in
+                    let data = doc.data()
+                    return QuizModel(
+                        id: doc.documentID,
+                        question: data["question"] as? String ?? "",
+                        answer: data["answer"] as? String ?? "",
+                        category: data["category"] as? String ?? "",
+                        createuser: data["createuser"] as? String ?? ""
+                    )
+                }
+
+                DispatchQueue.main.async {
+                    self.quizmodel = quizzes
+                }
+            }
+    }
+
+
+    func fetchAllQuizzes() {
+        db.collection("Quiz")
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("Error fetching quizzes: \(error.localizedDescription)")
+                    return
+                }
+
+                guard let documents = snapshot?.documents else { return }
+
+                let quizzes = documents.compactMap { doc -> QuizModel? in
+                    let data = doc.data()
+                    return QuizModel(
+                        id: doc.documentID,
+                        question: data["question"] as? String ?? "",
+                        answer: data["answer"] as? String ?? "",
+                        category: data["category"] as? String ?? "",
+                        createuser: data["createuser"] as? String ?? ""
+                    )
+                }
+
+                DispatchQueue.main.async {
+                    self.quizmodel = quizzes
+                }
+            }
+    }
     func fetchMyQuizzesfilter(category:String) {
         guard let userID = Auth.auth().currentUser?.uid else { return }
 
