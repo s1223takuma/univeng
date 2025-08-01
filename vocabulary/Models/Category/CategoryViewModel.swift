@@ -13,6 +13,7 @@ class CategoryViewModel: ObservableObject {
     private var db = Firestore.firestore()
     @Published private(set) var categorymodel: [CategoryModel] = []
     @Published var categoryNames: [String] = []
+    @Published var selectword:String = ""
 
     func saveCategory(name: String,completion: @escaping (Error?) -> Void) {
         let docRef = db.collection("Category").document(name)

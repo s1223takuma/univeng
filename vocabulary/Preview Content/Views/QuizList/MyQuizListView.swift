@@ -10,7 +10,6 @@ import SwiftUI
 struct MyQuizListView: View {
     @ObservedObject private var viewModel = QuizViewModel()
     @ObservedObject private var categoryviewModel = CategoryViewModel()
-    @State private var selectword:String = ""
 
     var body: some View {
             VStack {
@@ -22,7 +21,7 @@ struct MyQuizListView: View {
                     ProgressView("カテゴリーを読み込み中…")
                 } else {
                     HStack{
-                        Picker(selectword != "" ? "\(selectword)を選択中" : "カテゴリーを選択", selection: $selectword) {
+                        Picker(categoryviewModel.selectword != "" ? "\(categoryviewModel.selectword)を選択中" : "カテゴリーを選択", selection: $categoryviewModel.selectword) {
                             ForEach(categoryviewModel.categoryNames, id: \.self) { name in
                                 Text(name != "" ? "\(name)で絞り込む":"絞り込み無し")
                             }
@@ -58,14 +57,18 @@ struct MyQuizListView: View {
             }
             .padding(.horizontal)
             .onAppear {
-                viewModel.fetchMyQuizzes()
-                categoryviewModel.fetchCategoryNames()
-            }
-            .onChange(of:selectword){
-                if selectword == ""{
+                if categoryviewModel.selectword == ""{
                     viewModel.fetchMyQuizzes()
                 }else{
-                    viewModel.fetchMyQuizzesfilter(category: selectword)
+                    viewModel.fetchMyQuizzesfilter(category: categoryviewModel.selectword)
+                }
+                categoryviewModel.fetchCategoryNames()
+            }
+            .onChange(of:categoryviewModel.selectword){
+                if categoryviewModel.selectword == ""{
+                    viewModel.fetchMyQuizzes()
+                }else{
+                    viewModel.fetchMyQuizzesfilter(category: categoryviewModel.selectword)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
