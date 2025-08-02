@@ -96,7 +96,7 @@ struct MainView: View {
                 }
                 Spacer()
             }
-        }
+        }.onAppear()
     }
 }
 

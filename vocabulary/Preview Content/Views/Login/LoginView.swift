@@ -239,9 +239,21 @@ extension LoginView {
                         window.rootViewController = UIHostingController(rootView: ContentView())
                     }
                 } else {
-                    self.documentExists = false
-                    if let window = self.windowScene?.windows.first {
-                        window.rootViewController = UIHostingController(rootView: ContentView())
+                    let newUser = [
+                        "uid": documentID,
+                        "email": Auth.auth().currentUser?.email ?? "",
+                        "createdAt": FieldValue.serverTimestamp(),
+                        "totalpoint": 0
+                    ]
+                    docRef.setData(newUser) { error in
+                        if let error = error {
+                            print("ユーザーデータの保存に失敗: \(error.localizedDescription)")
+                        } else {
+                            print("新しいユーザーデータを保存しました")
+                        }
+                        if let window = self.windowScene?.windows.first {
+                            window.rootViewController = UIHostingController(rootView: ContentView())
+                        }
                     }
                 }
             }
