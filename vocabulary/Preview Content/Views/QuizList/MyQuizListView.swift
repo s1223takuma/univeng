@@ -45,10 +45,18 @@ struct MyQuizListView: View {
                     VStack{
                         List {
                             ForEach(viewModel.quizmodel) { quiz in
-                                NavigationLink(destination: SolveQuizView(quiz: quiz)) {
-                                    QuizCardView(quiz:quiz)
+                                if quiz.category == categoryviewModel.selectword{
+                                    NavigationLink(destination: SolveQuizView(quiz: quiz)) {
+                                        QuizCardView(quiz:quiz)
+                                    }
+                                    .padding(.vertical, 4)
                                 }
-                                .padding(.vertical, 4)
+                                else if categoryviewModel.selectword == ""{
+                                    NavigationLink(destination: SolveQuizView(quiz: quiz)) {
+                                        QuizCardView(quiz:quiz)
+                                    }
+                                    .padding(.vertical, 4)
+                                }
                             }
                         }
                         .listStyle(PlainListStyle())
@@ -57,19 +65,9 @@ struct MyQuizListView: View {
             }
             .padding(.horizontal)
             .onAppear {
-                if categoryviewModel.selectword == ""{
                     viewModel.fetchMyQuizzes()
-                }else{
-                    viewModel.fetchMyQuizzesfilter(category: categoryviewModel.selectword)
-                }
+
                 categoryviewModel.fetchCategoryNames()
-            }
-            .onChange(of:categoryviewModel.selectword){
-                if categoryviewModel.selectword == ""{
-                    viewModel.fetchMyQuizzes()
-                }else{
-                    viewModel.fetchMyQuizzesfilter(category: categoryviewModel.selectword)
-                }
             }
             .navigationBarTitleDisplayMode(.inline)
     }

@@ -240,9 +240,9 @@ extension LoginView {
                     }
                 } else {
                     let newUser = [
-                        "uid": documentID,
+                        "id": documentID,
+                        "username": "未設定",
                         "email": Auth.auth().currentUser?.email ?? "",
-                        "createdAt": FieldValue.serverTimestamp(),
                         "totalpoint": 0
                     ]
                     docRef.setData(newUser) { error in

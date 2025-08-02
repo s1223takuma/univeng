@@ -45,10 +45,18 @@ struct AllQuizListView: View {
                     VStack{
                         List {
                             ForEach(viewModel.quizmodel) { quiz in
-                                NavigationLink(destination: SolveQuizView(quiz: quiz)) {
-                                    QuizCardView(quiz:quiz)
+                                if quiz.category == categoryviewModel.selectword{
+                                    NavigationLink(destination: SolveQuizView(quiz: quiz)) {
+                                        QuizCardView(quiz:quiz)
+                                    }
+                                    .padding(.vertical, 4)
                                 }
-                                .padding(.vertical, 4)
+                                else if categoryviewModel.selectword == ""{
+                                    NavigationLink(destination: SolveQuizView(quiz: quiz)) {
+                                        QuizCardView(quiz:quiz)
+                                    }
+                                    .padding(.vertical, 4)
+                                }
                             }
                         }
                         .listStyle(PlainListStyle())
@@ -57,19 +65,8 @@ struct AllQuizListView: View {
             }
             .padding(.horizontal)
             .onAppear {
-                if categoryviewModel.selectword == ""{
-                    viewModel.fetchAllQuizzes()
-                }else{
-                    viewModel.fetchAllQuizzesfilter(category: categoryviewModel.selectword)
-                }
+                viewModel.fetchAllQuizzes()
                 categoryviewModel.fetchCategoryNames()
-            }
-            .onChange(of:categoryviewModel.selectword){
-                if categoryviewModel.selectword == ""{
-                    viewModel.fetchAllQuizzes()
-                }else{
-                    viewModel.fetchAllQuizzesfilter(category: categoryviewModel.selectword)
-                }
             }
             .navigationBarTitleDisplayMode(.inline)
     }
