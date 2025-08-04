@@ -11,6 +11,7 @@ struct MylistModel: Identifiable{
     var id: String
     var title: String
     var createuser: String
+    var shereuser: [String]
 }
 
 struct MylistLinkModel: Identifiable{

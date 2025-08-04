@@ -18,21 +18,22 @@ class MylistViewModel: ObservableObject {
     func saveMylist(title: String,completion: @escaping (Error?) -> Void){
         let docRef = db.collection("Mylist").document()
 
-        let mylist = MylistModel(id: docRef.documentID,title:title,createuser:Auth.auth().currentUser?.uid ?? "")
+        let mylist = MylistModel(id: docRef.documentID,title:title,createuser:Auth.auth().currentUser?.uid ?? "",shereuser: [Auth.auth().currentUser?.email ?? ""])
 
         docRef.setData([
             "id": mylist.id,
             "title": mylist.title,
-            "createuser": mylist.createuser
+            "createuser": mylist.createuser,
+            "shereuser": mylist.shereuser
         ]) { error in
             completion(error)
         }
     }
 
     func fetchMyLists() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard let mail = Auth.auth().currentUser?.email else { return }
         db.collection("Mylist")
-            .whereField("createuser", isEqualTo: uid)
+            .whereField("shereuser",arrayContains: mail)
             .getDocuments { snapshot, error in
                 if let documents = snapshot?.documents {
                     DispatchQueue.main.async {
@@ -41,7 +42,8 @@ class MylistViewModel: ObservableObject {
                             return MylistModel(
                                 id: doc.documentID,
                                 title: data["title"] as? String ?? "",
-                                createuser: data["createuser"] as? String ?? ""
+                                createuser: data["createuser"] as? String ?? "",
+                                shereuser: data["shereuser"] as? [String] ?? []
                             )
                         }
                     }

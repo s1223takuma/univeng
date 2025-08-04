@@ -47,7 +47,7 @@ struct MyListView: View {
                 } else {
                     List {
                         ForEach(viewModel.mylistmodel) { list in
-                            NavigationLink(destination: NotfoundView()) {
+                            NavigationLink(destination: MyListDetailView(mylist: list)) {
                                 VStack(alignment: .leading) {
                                     Text(list.title)
                                         .font(.headline)
