@@ -63,7 +63,7 @@ struct MainView: View {
                             .cornerRadius(12)
                             .padding(.horizontal)
                     }
-                    NavigationLink(destination: NotfoundView()) {
+                    NavigationLink(destination: MyListView()) {
                         Text("マイリストを編集")
                             .font(.headline)
                             .frame(maxWidth: .infinity,maxHeight: 30)

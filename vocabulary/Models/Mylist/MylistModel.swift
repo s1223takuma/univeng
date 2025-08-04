@@ -10,7 +10,11 @@ import FirebaseFirestore
 struct MylistModel: Identifiable{
     var id: String
     var title: String
-    var quizids: [String]
     var createuser: String
-    var shereuser: [String]
+}
+
+struct MylistLinkModel: Identifiable{
+    var id: String
+    var quizid: String
+    var mylistid: String
 }
