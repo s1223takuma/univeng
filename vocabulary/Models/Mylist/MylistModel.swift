@@ -18,4 +18,6 @@ struct MylistLinkModel: Identifiable{
     var id: String
     var quizid: String
     var mylistid: String
+    var quiztitle: String
+    var quizans: String
 }

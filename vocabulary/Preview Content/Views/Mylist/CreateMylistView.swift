@@ -84,7 +84,3 @@ struct CreateMylistView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
-
-#Preview {
-    CreateMylistView()
-}

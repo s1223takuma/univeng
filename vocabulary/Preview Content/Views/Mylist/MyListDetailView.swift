@@ -1,5 +1,5 @@
 //
-//  AddQuizToMylistView.swift
+//  MyListDetailView.swift
 //  vocabulary
 //
 //  Created by 関琢磨 on 2025/08/04.
@@ -10,55 +10,140 @@ import FirebaseAuth
 
 struct MyListDetailView: View {
     let mylist: MylistModel
-    var uid: String = Auth.auth().currentUser?.uid ?? ""
-    @State private var selectedQuizId: String = ""
-    @State private var selectedUserEmail: String = ""
+    var uid = Auth.auth().currentUser?.uid ?? ""
+
+    // ダミーデータ（後でFirestoreから取得に置き換え可）
+    @State private var quizzes: [QuizModel] = [
+        QuizModel(id: "q1", question: "富士山の高さは？", answer: "3776m", category: "地理", createuser: "u1", createuserdomain: "example.com"),
+        QuizModel(id: "q2", question: "Swiftの開発元は？", answer: "Apple", category: "プログラミング", createuser: "u2", createuserdomain: "example.com")
+    ]
+
+    @State private var isPresentingAddQuizSheet = false
+    @State private var isPresentingShareSheet = false
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text("「\(mylist.title)」の編集")
-                .font(.title2)
-                .fontWeight(.bold)
-                .padding(.top)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                // タイトル
+                Text("「\(mylist.title)」の詳細")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding(.top)
 
-            GroupBox(label: Label("クイズを追加", systemImage: "plus.square.on.square")) {
-                VStack(alignment: .leading, spacing: 10) {
-                    TextField("クイズIDを入力", text: $selectedQuizId)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-
+                // 追加ボタンエリア
+                HStack(spacing: 16) {
                     Button(action: {
-                        // クイズ追加処理
+                        isPresentingAddQuizSheet = true
                     }) {
-                        Label("クイズをマイリストに追加", systemImage: "plus")
+                        Label("クイズを追加", systemImage: "plus.circle")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.blue)
-                }
-                .padding()
-            }
-            if mylist.createuser == uid{
-                GroupBox(label: Label("共有ユーザーを追加", systemImage: "person.crop.circle.badge.plus")) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        TextField("共有したいユーザーのメールアドレス", text: $selectedUserEmail)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                        
+
+                    if mylist.createuser == uid {
                         Button(action: {
-                            // 共有ユーザー追加処理
+                            isPresentingShareSheet = true
                         }) {
-                            Label("ユーザーを共有に追加", systemImage: "person.badge.plus")
+                            Label("共有を追加", systemImage: "person.crop.circle.badge.plus")
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(.green)
                     }
-                    .padding()
+                }
+                .padding(.vertical, 8)
+
+                // クイズ一覧
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Image(systemName: "list.bullet.rectangle")
+                        Text("クイズ一覧")
+                            .font(.headline)
+                        Spacer()
+                    }
+
+                    if quizzes.isEmpty {
+                        Text("クイズがまだ追加されていません")
+                            .foregroundColor(.gray)
+                            .padding(.vertical, 8)
+                    } else {
+                        ForEach(quizzes) { quiz in
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(quiz.question)
+                                    .font(.body)
+                                    .fontWeight(.semibold)
+                                Text("カテゴリ: \(quiz.category)")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
+                        }
+                    }
+                }
+
+                // 共有ユーザー一覧（作成者のみ表示）
+                if mylist.createuser == uid {
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Image(systemName: "person.2")
+                            Text("共有ユーザー")
+                                .font(.headline)
+                            Spacer()
+                        }
+
+                        if mylist.shereuser.isEmpty {
+                            Text("共有ユーザーはいません")
+                                .foregroundColor(.gray)
+                                .padding(.vertical, 8)
+                        } else {
+                            ForEach(mylist.shereuser, id: \.self) { user in
+                                HStack {
+                                    Image(systemName: "person.crop.circle")
+                                    Text(user)
+                                        .font(.body)
+                                    Spacer()
+                                }
+                                .padding(.vertical, 4)
+                            }
+                        }
+                    }
+                }
+
+                Spacer()
+            }
+            .padding()
+        }
+        .navigationBarTitleDisplayMode(.inline)
+
+        // モーダル（UIだけでダミー）
+        .sheet(isPresented: $isPresentingAddQuizSheet) {
+            NavigationStack {
+                AddQuizView()
+                .navigationTitle("クイズを追加")
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("閉じる") {
+                            isPresentingAddQuizSheet = false
+                        }
+                    }
                 }
             }
-
-            Spacer()
         }
-        .padding()
-        .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $isPresentingShareSheet) {
+            NavigationStack {
+                AddShereUserView()
+                .navigationTitle("共有ユーザー追加")
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("閉じる") {
+                            isPresentingShareSheet = false
+                        }
+                    }
+                }
+            }
+        }
     }
 }
