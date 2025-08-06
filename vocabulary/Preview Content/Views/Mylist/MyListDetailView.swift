@@ -123,26 +123,12 @@ struct MyListDetailView: View {
             NavigationStack {
                 AddQuizView()
                 .navigationTitle("クイズを追加")
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("閉じる") {
-                            isPresentingAddQuizSheet = false
-                        }
-                    }
-                }
             }
         }
         .sheet(isPresented: $isPresentingShareSheet) {
             NavigationStack {
-                AddShereUserView()
+                AddShereUserView(mylistid: mylist.id)
                 .navigationTitle("共有ユーザー追加")
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("閉じる") {
-                            isPresentingShareSheet = false
-                        }
-                    }
-                }
             }
         }
     }
