@@ -57,4 +57,13 @@ class MylistViewModel: ObservableObject {
         docRef.updateData(["shereuser": FieldValue.arrayUnion([usermail])])
     }
 
+    func deletemylist(mylistid: String){
+        let docRef = db.collection("Mylist").document(mylistid)
+        docRef.delete()
+    }
+
+    func removeShereuser(usermail: String,mylistid:String){
+        let docRef = db.collection("Mylist").document(mylistid)
+        docRef.updateData(["shereuser": FieldValue.arrayRemove([usermail])])
+    }
 }

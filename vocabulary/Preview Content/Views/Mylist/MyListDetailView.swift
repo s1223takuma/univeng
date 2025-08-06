@@ -11,8 +11,8 @@ import FirebaseAuth
 struct MyListDetailView: View {
     let mylist: MylistModel
     var uid = Auth.auth().currentUser?.uid ?? ""
+    @Environment(\.dismiss) var dismiss
 
-    // ダミーデータ（後でFirestoreから取得に置き換え可）
     @State private var quizzes: [QuizModel] = [
         QuizModel(id: "q1", question: "富士山の高さは？", answer: "3776m", category: "地理", createuser: "u1", createuserdomain: "example.com"),
         QuizModel(id: "q2", question: "Swiftの開発元は？", answer: "Apple", category: "プログラミング", createuser: "u2", createuserdomain: "example.com")
@@ -20,115 +20,129 @@ struct MyListDetailView: View {
 
     @State private var isPresentingAddQuizSheet = false
     @State private var isPresentingShareSheet = false
+    @ObservedObject private var viewModel = MylistViewModel()
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // タイトル
-                Text("「\(mylist.title)」の詳細")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding(.top)
-
-                // 追加ボタンエリア
-                HStack(spacing: 16) {
-                    Button(action: {
-                        isPresentingAddQuizSheet = true
-                    }) {
-                        Label("クイズを追加", systemImage: "plus.circle")
-                            .frame(maxWidth: .infinity)
+        List {
+            // タイトル + 削除ボタン + 追加ボタン（1つのカード内に統合）
+            Section {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Text(mylist.title)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        Spacer()
+                        if mylist.createuser == uid {
+                            Button {
+                                viewModel.deletemylist(mylistid: mylist.id)
+                                dismiss()
+                            } label: {
+                                Image(systemName: "trash")
+                                    .foregroundColor(.red)
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.blue)
-
-                    if mylist.createuser == uid {
-                        Button(action: {
-                            isPresentingShareSheet = true
-                        }) {
-                            Label("共有を追加", systemImage: "person.crop.circle.badge.plus")
+                    // 追加ボタンをタイトル直下に
+                    HStack(spacing: 5) {
+                        Button(action: { isPresentingAddQuizSheet = true }) {
+                            Text("クイズを追加")
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.borderedProminent)
-                        .tint(.green)
+                        .tint(.blue)
+
+                        if mylist.createuser == uid {
+                            Button(action: { isPresentingShareSheet = true }) {
+                                Text("共有追加")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.green)
+                        }
                     }
                 }
-                .padding(.vertical, 8)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                .listRowBackground(Color.clear)
+            }
 
-                // クイズ一覧
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Image(systemName: "list.bullet.rectangle")
-                        Text("クイズ一覧")
-                            .font(.headline)
-                        Spacer()
+            // クイズ一覧
+            Section(header: Label("クイズ一覧", systemImage: "list.bullet.rectangle")) {
+                if quizzes.isEmpty {
+                    Text("クイズがまだ追加されていません")
+                        .foregroundColor(.gray)
+                } else {
+                    ForEach(quizzes) { quiz in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(quiz.question)
+                                .font(.body)
+                                .fontWeight(.semibold)
+                            Text("カテゴリ: \(quiz.category)")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
+                        .listRowBackground(Color.clear)
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                // クイズ削除処理
+                            } label: {
+                                Label("削除", systemImage: "trash")
+                            }
+                        }
                     }
+                }
+            }
 
-                    if quizzes.isEmpty {
-                        Text("クイズがまだ追加されていません")
+            // 共有ユーザー
+            if mylist.createuser == uid {
+                Section(header: Label("共有ユーザー", systemImage: "person.2")) {
+                    if mylist.shereuser.isEmpty {
+                        Text("共有ユーザーはいません")
                             .foregroundColor(.gray)
-                            .padding(.vertical, 8)
                     } else {
-                        ForEach(quizzes) { quiz in
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(quiz.question)
+                        ForEach(mylist.shereuser, id: \.self) { user in
+                            HStack {
+                                Image(systemName: "person.crop.circle")
+                                    .foregroundColor(.blue)
+                                Text(user)
                                     .font(.body)
-                                    .fontWeight(.semibold)
-                                Text("カテゴリ: \(quiz.category)")
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
+                                Spacer()
                             }
                             .padding()
                             .background(Color(.systemGray6))
-                            .cornerRadius(8)
-                        }
-                    }
-                }
-
-                // 共有ユーザー一覧（作成者のみ表示）
-                if mylist.createuser == uid {
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            Image(systemName: "person.2")
-                            Text("共有ユーザー")
-                                .font(.headline)
-                            Spacer()
-                        }
-
-                        if mylist.shereuser.isEmpty {
-                            Text("共有ユーザーはいません")
-                                .foregroundColor(.gray)
-                                .padding(.vertical, 8)
-                        } else {
-                            ForEach(mylist.shereuser, id: \.self) { user in
-                                HStack {
-                                    Image(systemName: "person.crop.circle")
-                                    Text(user)
-                                        .font(.body)
-                                    Spacer()
+                            .cornerRadius(10)
+                            .listRowBackground(Color.clear)
+                            .swipeActions(edge: .trailing) {
+                                Button(role: .destructive) {
+                                    viewModel.removeShereuser(usermail: user, mylistid: mylist.id)
+                                } label: {
+                                    Label("削除", systemImage: "trash")
                                 }
-                                .padding(.vertical, 4)
                             }
                         }
                     }
                 }
-
-                Spacer()
             }
-            .padding()
         }
+        .listStyle(.insetGrouped)
         .navigationBarTitleDisplayMode(.inline)
 
-        // モーダル（UIだけでダミー）
+        // シート
         .sheet(isPresented: $isPresentingAddQuizSheet) {
             NavigationStack {
                 AddQuizView()
-                .navigationTitle("クイズを追加")
+                    .navigationTitle("クイズを追加")
             }
         }
         .sheet(isPresented: $isPresentingShareSheet) {
             NavigationStack {
                 AddShereUserView(mylistid: mylist.id)
-                .navigationTitle("共有ユーザー追加")
+                    .navigationTitle("共有ユーザー追加")
             }
         }
     }
