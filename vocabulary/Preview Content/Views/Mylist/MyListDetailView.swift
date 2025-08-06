@@ -12,6 +12,7 @@ struct MyListDetailView: View {
     let mylist: MylistModel
     var uid = Auth.auth().currentUser?.uid ?? ""
     @Environment(\.dismiss) var dismiss
+    @ObservedObject private var viewModel = MylistViewModel()
 
     @State private var quizzes: [QuizModel] = [
         QuizModel(id: "q1", question: "富士山の高さは？", answer: "3776m", category: "地理", createuser: "u1", createuserdomain: "example.com"),
@@ -20,7 +21,8 @@ struct MyListDetailView: View {
 
     @State private var isPresentingAddQuizSheet = false
     @State private var isPresentingShareSheet = false
-    @ObservedObject private var viewModel = MylistViewModel()
+    @State private var isdeletealert: Bool = false
+    
 
     var body: some View {
         List {
@@ -34,13 +36,19 @@ struct MyListDetailView: View {
                         Spacer()
                         if mylist.createuser == uid {
                             Button {
-                                viewModel.deletemylist(mylistid: mylist.id)
-                                dismiss()
+                                isdeletealert.toggle()
                             } label: {
                                 Image(systemName: "trash")
                                     .foregroundColor(.red)
                             }
                             .buttonStyle(.plain)
+                            .alert("\(mylist.title)を削除しますか",isPresented: $isdeletealert){
+                                Button("戻る",role:.cancel){}
+                                Button("削除する",role:.destructive){
+                                    viewModel.deletemylist(mylistid: mylist.id)
+                                    dismiss()
+                                }
+                            }
                         }
                     }
                     // 追加ボタンをタイトル直下に

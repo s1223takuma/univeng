@@ -15,7 +15,7 @@ struct AddShereUserView: View {
     @State private var successMessage: String?
     @State private var errorMessage: String?
     @ObservedObject var viewModel = MylistViewModel()
-
+    
     var body: some View {
             VStack(spacing: 20) {
                 // 説明テキスト
