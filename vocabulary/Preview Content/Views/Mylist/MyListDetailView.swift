@@ -153,5 +153,10 @@ struct MyListDetailView: View {
                     .navigationTitle("共有ユーザー追加")
             }
         }
+        .onChange(of: isPresentingShareSheet){ old,new in
+            if old == true && new == false {
+                    viewModel.fetchMyLists()
+                }
+        }
     }
 }
