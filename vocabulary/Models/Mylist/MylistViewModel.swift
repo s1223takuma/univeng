@@ -52,6 +52,8 @@ class MylistViewModel: ObservableObject {
             }
     }
 
+    
+
     func addShereuser(usermail: String, mylistid: String){
         let docRef = db.collection("Mylist").document(mylistid)
         docRef.updateData(["shereuser": FieldValue.arrayUnion([usermail])])

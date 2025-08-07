@@ -139,8 +139,6 @@ struct MyListDetailView: View {
         }
         .listStyle(.insetGrouped)
         .navigationBarTitleDisplayMode(.inline)
-
-        // シート
         .sheet(isPresented: $isPresentingAddQuizSheet) {
             NavigationStack {
                 AddQuizView()
@@ -152,11 +150,6 @@ struct MyListDetailView: View {
                 AddShereUserView(mylistid: mylist.id)
                     .navigationTitle("共有ユーザー追加")
             }
-        }
-        .onChange(of: isPresentingShareSheet){ old,new in
-            if old == true && new == false {
-                    viewModel.fetchMyLists()
-                }
         }
     }
 }
