@@ -13,12 +13,11 @@ class MylistViewModel: ObservableObject {
     var authenticationManager = AuthenticationManager()
     private var db = Firestore.firestore()
     @Published private(set) var mylistmodel: [MylistModel] = []
-    @Published private(set) var mylistlinkmodel: [MylistLinkModel] = []
 
     func saveMylist(title: String,completion: @escaping (Error?) -> Void){
         let docRef = db.collection("Mylist").document()
 
-        let mylist = MylistModel(id: docRef.documentID,title:title,createuser:Auth.auth().currentUser?.uid ?? "",shereuser: [])
+        let mylist = MylistModel(id: docRef.documentID,title:title,createuser:Auth.auth().currentUser?.uid ?? "",shereuser: [], quizlist: [])
 
         docRef.setData([
             "id": mylist.id,
@@ -44,7 +43,8 @@ class MylistViewModel: ObservableObject {
                                 id: doc.documentID,
                                 title: data["title"] as? String ?? "",
                                 createuser: data["createuser"] as? String ?? "",
-                                shereuser: data["shereuser"] as? [String] ?? []
+                                shereuser: data["shereuser"] as? [String] ?? [],
+                                quizlist: data["quizlist"] as? [String] ?? []
                             )
                         }
                     }
